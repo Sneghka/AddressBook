@@ -166,5 +166,15 @@ namespace addressbook_web_tests.Tests
 
             Assert.AreEqual(oldGroups, newGroups);
         }
+
+        [Test]
+        public void TestDbConnection()
+        {
+            app.Groups.GetGroupList();
+
+            var db = new AddressBookDB();
+
+        }
+
     }
 }
