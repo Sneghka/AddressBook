@@ -63,6 +63,15 @@ namespace addressbook_web_tests.appmanager
             ReturnToGroupsPage();
             return this;
         }
+        public GroupHelper Remove(GroupData group)
+        {
+            _manager.Navigator.GoToGroupsPage();
+            Thread.Sleep(2000);
+            SelectGroup(group.Id);
+            RemoveGroup();
+            ReturnToGroupsPage();
+            return this;
+        }
 
 
         public GroupHelper InitGroupCreation()
@@ -99,6 +108,11 @@ namespace addressbook_web_tests.appmanager
             return this;
         }
 
+        public GroupHelper SelectGroup(string id)
+        {
+            _driver.FindElement(By.XPath($"(//input[@name='selected[]' and @value='{id}'])")).Click();
+            return this;
+        }
         public GroupHelper SelectGroup(int index)
         {
             _driver.FindElement(By.XPath($"(//input[@name='selected[]'])[{index + 1}]")).Click();
@@ -124,5 +138,7 @@ namespace addressbook_web_tests.appmanager
             }
             return new List<GroupData>(groupCache);
         }
+
+      
     }
 }

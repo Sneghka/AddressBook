@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using LinqToDB.Mapping;
+using NUnit.Framework;
 
 namespace addressbook_web_tests.Model
 {
@@ -60,6 +63,24 @@ namespace addressbook_web_tests.Model
             this.Name = name;
             this.Header = header;
             this.Footer = footer;
+        }
+
+        public static List<GroupData> GetAll()
+        {
+            using (var db = new AddressBookDB())
+            {
+                return (from g in db.Groups select g).ToList();
+            }
+        }
+
+        public List<ContactData> GetContacts()
+        {
+            using (var db = new AddressBookDB())
+            {
+                return (from c in db.Contacts
+                        from gcr in db.GCR.Where(p => p.GroupId == Id && p.ContactId == c.Id)
+                        select c).Distinct().ToList();
+            }
         }
 
 

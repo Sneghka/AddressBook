@@ -6,17 +6,20 @@ using NUnit.Framework;
 namespace addressbook_web_tests.Tests
 {
     [TestFixture]
-    public class GroupRemovalTests : AuthTestBase
+    public class GroupRemovalTests : GroupTestBase
     {
 
         [Test]
         public void GroupRemovalTest()
         {
-            List<GroupData> oldGroups = app.Groups.GetGroupList();
-            var oldData = oldGroups[0];
-            app.Groups.Remove(0);
+            //List<GroupData> oldGroups = app.Groups.GetGroupList();
+            List<GroupData> oldGroups = GroupData.GetAll();
+
+            var toBeRemoved = oldGroups[0];
+            app.Groups.Remove(toBeRemoved);
             Assert.AreEqual(oldGroups.Count - 1, app.Groups.GetGroupCount());
-            List<GroupData> newGroups = app.Groups.GetGroupList();
+            //List<GroupData> newGroups = app.Groups.GetGroupList();
+            List<GroupData> newGroups = GroupData.GetAll();
             oldGroups.RemoveAt(0);
             oldGroups.Sort();
             newGroups.Sort();
@@ -24,7 +27,7 @@ namespace addressbook_web_tests.Tests
 
             foreach (var group in newGroups)
             {
-                Assert.AreNotEqual(group.Id, oldData.Id);
+                Assert.AreNotEqual(group.Id, toBeRemoved.Id);
                
             }
         }

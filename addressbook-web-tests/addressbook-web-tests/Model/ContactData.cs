@@ -1,14 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
+using LinqToDB.Mapping;
+using NUnit.Framework;
 
 namespace addressbook_web_tests.Model
 {
+    [Table(Name="addressbook")]
     public class ContactData : IEquatable<ContactData>, IComparable<ContactData>
     {
         private string allPhones;
+
+        [Column(Name = "id"), PrimaryKey]
+        public string Id { get; set; }
+
+        [Column(Name="firstname")]
         public string FirstName { get; set; }
+        
         public string MiddleName { get; set; }
+
+        [Column(Name = "lastname")]
         public string LastName { get; set; }
+
         public string NickName { get; set; }
         public string Title { get; set; }
         public string Company { get; set; }
@@ -40,11 +54,21 @@ namespace addressbook_web_tests.Model
             set {  allPhones = value; }
         }
 
+
+        public ContactData()
+        {
+        }
+
+        public ContactData(string firstName, string lastName)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+        }
+
         private string Cleanup(string phone)
         {
             if (phone == null) return "";
             return Regex.Replace(phone, "[ -()]" , "") + "\r\n";
-           
         }
 
         public bool Equals(ContactData other)
@@ -71,5 +95,7 @@ namespace addressbook_web_tests.Model
 
             return FirstName.CompareTo(other.FirstName);
         }
+
+       
     }
 }

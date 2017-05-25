@@ -16,7 +16,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 namespace addressbook_web_tests.Tests
 {
     [TestFixture]
-    public class GroupCreationTests : AuthTestBase
+    public class GroupCreationTests : GroupTestBase
     {
         public static IEnumerable<GroupData> RandomGroupDataProvider()
         {
@@ -142,35 +142,25 @@ namespace addressbook_web_tests.Tests
         public void GroupCreationTestWithDataGenerationFromJsonFile(GroupData group)
         {
             Thread.Sleep(2000);
-            List<GroupData> oldGroups = app.Groups.GetGroupList();
+           var oldGroups = GroupData.GetAll();
             app.Groups.Create(group);
             Assert.AreEqual(oldGroups.Count + 1, app.Groups.GetGroupCount());
-            List<GroupData> newGroups = app.Groups.GetGroupList();
+            List<GroupData> newGroups = GroupData.GetAll();
             oldGroups.Add(group);
             oldGroups.Sort();
             newGroups.Sort();
             Assert.AreEqual(oldGroups, newGroups);
         }
 
-        
+
         [Test]
         public void TestDbConnecitvity()
         {
-            var start = DateTime.Now;
-            var db = new AddressBookDB();
-            var groupsFromDb = (from g in db.Groups
-                                select g).ToList();
-            
-            var finish = DateTime.Now;
-            Console.Write("Get Groups from Db = " + (finish - start) + "секунд");
-
-            start = DateTime.Now;
-            var groupsFromUi = app.Groups.GetGroupList();
-            db.Close();
-            finish = DateTime.Now;
-            Console.Write("Get Groups from Ui = " + finish.Subtract(start) + "секунд");
-
+            var t = GroupData.GetAll()[0].GetContacts();
+            foreach (var VARIABLE in t)
+            {
+                Console.WriteLine(VARIABLE.LastName);
+            }
         }
-
     }
 }
