@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Xml.Serialization;
 using addressbook_web_tests.Model;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Excel = Microsoft.Office.Interop.Excel;
+
 
 
 namespace addressbook_web_tests.Tests
@@ -148,31 +152,23 @@ namespace addressbook_web_tests.Tests
             Assert.AreEqual(oldGroups, newGroups);
         }
 
+        
         [Test]
-        public void BadNameGroupCreationTest()
+        public void TestDbConnecitvity()
         {
-            var group = new GroupData("a'a");
-            group.Header = "";
-            group.Footer = "";
-
-            Thread.Sleep(2000);
-            List<GroupData> oldGroups = app.Groups.GetGroupList();
-            app.Groups.Create(group);
-            Assert.AreEqual(oldGroups.Count + 1, app.Groups.GetGroupCount());
-            List<GroupData> newGroups = app.Groups.GetGroupList();
-            oldGroups.Add(group);
-            oldGroups.Sort();
-            newGroups.Sort();
-
-            Assert.AreEqual(oldGroups, newGroups);
-        }
-
-        [Test]
-        public void TestDbConnection()
-        {
-            app.Groups.GetGroupList();
-
+            var start = DateTime.Now;
             var db = new AddressBookDB();
+            var groupsFromDb = (from g in db.Groups
+                                select g).ToList();
+            
+            var finish = DateTime.Now;
+            Console.Write("Get Groups from Db = " + (finish - start) + "секунд");
+
+            start = DateTime.Now;
+            var groupsFromUi = app.Groups.GetGroupList();
+            db.Close();
+            finish = DateTime.Now;
+            Console.Write("Get Groups from Ui = " + finish.Subtract(start) + "секунд");
 
         }
 
